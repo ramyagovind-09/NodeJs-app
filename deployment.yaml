@@ -1,0 +1,39 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-deployment
+  labels:
+    app: nodejs
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nodejs
+  template:
+    metadata:
+      labels:
+        app: nodejs
+    spec:
+      containers:
+      - name: nodejs
+        image: venkateshvgs/nodejs-app:latest
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: dockercred
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejs-svc
+spec:
+  type: LoadBalancer
+  selector:
+    app: nodejs
+  ports:
+    - name: nodejs
+      protocol: TCP
+      port: 80
+      targetPort: 80
